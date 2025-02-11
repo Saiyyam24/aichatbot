@@ -1,14 +1,12 @@
 import streamlit as st
 import nltk
+import ollama
 from transformers import pipeline 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 nltk.download('punkt')
 nltk.download('stopwords')
-
-chatbot = pipeline("text-generation", model="medllama2")
-
 
 def healthcare_chatbot(user_input):
     if "symptoms" in user_input:
@@ -18,8 +16,8 @@ def healthcare_chatbot(user_input):
     elif "medication" in user_input:
         return "It's important to take your prescribed medication regularly."
     else:
-        response = chatbot(user_input,max_length=300,num_return_sequences=1)
-        return response[0]['generated_text']
+        response = ollama.chat(model="medllama2",messages=[{"role":"user","content":user_input}])
+        return response["message"]["content"]
 
 def main():
     st.title("Healthcare Assist Chatbot")
